@@ -5,7 +5,7 @@
 from __future__ import division
 
 import numpy as np
-
+from ...ext.decorator import decorator
 
 def arg_to_array(func):
     """
@@ -43,6 +43,7 @@ def as_vec4(obj, default=(0, 0, 0, 1)):
     return obj
 
 
+@decorator
 def arg_to_vec4(func):
     """
     Decorator for converting argument to vec4 format suitable for 4x4 matrix
