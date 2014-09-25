@@ -38,8 +38,8 @@ class ViewBox(Widget):
     scene : None or :class:`SubScene`
         The :class:`SubScene` instance to view. If None, a new 
         :class:`SubScene` is created.
-    
-    All extra keyword arguments are passed to :func:`Widget.__init__`.
+    **kwds
+        Passed directly to :func:`Widget.__init__`.
     """
     def __init__(self, camera=None, scene=None, bgcolor='black', **kwds):
         
