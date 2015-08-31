@@ -103,7 +103,10 @@ def create_visual_node(subclass):
 
     # Decide on new class name
     clsname = subclass.__name__
-    assert clsname.endswith('Visual')
+    if not (clsname.endswith('Visual') and
+            issubclass(subclass, visuals.BaseVisual)):
+        raise RuntimeError('Class "%s" must end with Visual, and must '
+                           'subclass BaseVisual' % clsname)
     clsname = clsname[:-6]
 
     # Generate new docstring based on visual docstring
@@ -121,11 +124,13 @@ def create_visual_node(subclass):
         self._visual_superclass = subclass
 
         subclass.__init__(self, *args, **kwargs)
+        self.unfreeze()
         VisualNode.__init__(self, parent=parent, name=name)
+        self.freeze()
 
     # Create new class
-    cls = type(clsname, (VisualNode, subclass), {'__init__': __init__,
-                                                 '__doc__': doc})
+    cls = type(clsname, (VisualNode, subclass),
+               {'__init__': __init__, '__doc__': doc})
 
     return cls
 
@@ -220,13 +225,16 @@ def generate_docstring(subclass, clsname):
 # are attached programatically in the create_visual_node call.
 # However, help(vispy.scene.FooVisual) still works
 
+Arrow = create_visual_node(visuals.ArrowVisual)
 Axis = create_visual_node(visuals.AxisVisual)
 Box = create_visual_node(visuals.BoxVisual)
+ColorBar = create_visual_node(visuals.ColorBarVisual)
+Compound = create_visual_node(visuals.CompoundVisual)
 Cube = create_visual_node(visuals.CubeVisual)
 Ellipse = create_visual_node(visuals.EllipseVisual)
 GridLines = create_visual_node(visuals.GridLinesVisual)
-Image = create_visual_node(visuals.ImageVisual)
 Histogram = create_visual_node(visuals.HistogramVisual)
+Image = create_visual_node(visuals.ImageVisual)
 Isocurve = create_visual_node(visuals.IsocurveVisual)
 Isoline = create_visual_node(visuals.IsolineVisual)
 Isosurface = create_visual_node(visuals.IsosurfaceVisual)
@@ -240,14 +248,13 @@ Rectangle = create_visual_node(visuals.RectangleVisual)
 RegularPolygon = create_visual_node(visuals.RegularPolygonVisual)
 ScrollingLines = create_visual_node(visuals.ScrollingLinesVisual)
 Spectrogram = create_visual_node(visuals.SpectrogramVisual)
+Sphere = create_visual_node(visuals.SphereVisual)
 SurfacePlot = create_visual_node(visuals.SurfacePlotVisual)
 Text = create_visual_node(visuals.TextVisual)
 Tube = create_visual_node(visuals.TubeVisual)
 # Visual = create_visual_node(visuals.Visual)  # Should not be created
-Compound = create_visual_node(visuals.CompoundVisual)
 Volume = create_visual_node(visuals.VolumeVisual)
 XYZAxis = create_visual_node(visuals.XYZAxisVisual)
-ColorBar = create_visual_node(visuals.ColorBarVisual)
 
 __all__ = [name for (name, obj) in globals().items()
            if isinstance(obj, type) and issubclass(obj, VisualNode)]

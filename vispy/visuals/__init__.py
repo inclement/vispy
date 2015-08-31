@@ -21,7 +21,7 @@ from .histogram import HistogramVisual  # noqa
 from .isocurve import IsocurveVisual  # noqa
 from .isoline import IsolineVisual  # noqa
 from .isosurface import IsosurfaceVisual  # noqa
-from .line import LineVisual  # noqa
+from .line import LineVisual, ArrowVisual  # noqa
 from .line_plot import LinePlotVisual  # noqa
 from .markers import MarkersVisual, marker_types  # noqa
 from .mesh import MeshVisual  # noqa
@@ -31,10 +31,12 @@ from .rectangle import RectangleVisual  # noqa
 from .regular_polygon import RegularPolygonVisual  # noqa
 from .scrolling_lines import ScrollingLinesVisual  # noqa
 from .spectrogram import SpectrogramVisual  # noqa
+from .sphere import SphereVisual  # noqa
 from .surface_plot import SurfacePlotVisual  # noqa
 from .text import TextVisual  # noqa
 from .tube import TubeVisual  # noqa
 from .visual import BaseVisual, Visual, CompoundVisual  # noqa
 from .volume import VolumeVisual  # noqa
 from .xyz_axis import XYZAxisVisual  # noqa
+from .border import _BorderVisual  # noqa
 from .colorbar import ColorBarVisual  # noqa
