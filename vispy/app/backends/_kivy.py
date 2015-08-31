@@ -20,25 +20,50 @@ class ApplicationBackend(BaseApplicationBackend):
     def _vispy_get_backend_name(self):
         return 'kivy'
 
-    def _vispy_process_events(self):
-        print('events being processed...')
+    def _vispy_process_events(self, *args):
+        for timer in self._timers:
+            timer._tick()
+
+        wins = CanvasBackend.instances
+        for win in wins:
+            win._on_draw()
+            # if win._needs_draw:
+            #     win._needs_draw = False
+            #     win._on_draw()
 
     def _vispy_run(self):
         print('vispy run!')
         from kivy.clock import Clock
         Clock.schedule_interval(self._vispy_process_events, 0.5)
 
+        from kivy.app import App
+
+        # Trying (unsuccessfully?) to make sure the gl context is ready
+        from kivy.base import EventLoop
+        EventLoop.ensure_window()
+        from kivy.core.window import Window
+
+        App.get_running_app().run()
+
     def _vispy_reuse(self):
         pass  # Can always pass?
 
     def _vispy_quit(self):
-        pass  # Should quit kivy
+        for timer in self._timers:
+            timer._vispy_stop()
+        self._timers = []
 
     def _vispy_get_native_app(self):
         from kivy.app import App
+
+        class TestApp(App):
+            def build(self):
+                from kivy.uix.button import Button
+                return Button(size_hint=(0.3, 0.3), text='test')
+
         running = App.get_running_app()
         if not running:
-            running = App()
+            running = TestApp()
         return running
 
     def _add_timer(self, timer):
@@ -48,13 +73,26 @@ class ApplicationBackend(BaseApplicationBackend):
 from kivy.uix.widget import Widget
 class CanvasBackend(BaseCanvasBackend):
 
+    instances = []
+
     def __init__(self, *args, **kwargs):
         super(CanvasBackend, self).__init__(*args)
         p = self._process_backend_kwargs(kwargs)
 
+        CanvasBackend.instances.append(self)
+
+        self._needs_draw = False
+
         from kivy.core.window import Window
         # We should set any settings here, but just take what we're
         # given for now
+
+
+    def _on_draw(self):
+        if self._vispy_canvas is None:
+            return
+        self._vispy_canvas.set_current()
+        self._vispy_canvas.events.draw(region=None)  # (0, 0, w, h))
 
     def _vispy_set_current(self):
         pass  # Kivy has only one window anyway
@@ -80,7 +118,11 @@ class CanvasBackend(BaseCanvasBackend):
         pass
 
     def _vispy_update(self):
-        pass
+        # Invoke a redraw, passing it on to the canvas
+        if self._vispy_canvas is None:
+            return
+        # Mark that this window wants to be drawn on the next loop iter
+        self._needs_draw = True
 
     def _vispy_close(self):
         pass

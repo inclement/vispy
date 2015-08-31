@@ -264,7 +264,7 @@ def convert_shaders(convert, shaders):
                 lines.insert(has_version, 'precision highp float;')
             if not has_prec_int:
                 lines.insert(has_version, 'precision highp int;')
-            # BUG: fails on WebGL (Chrome)
+            # # BUG: fails on WebGL (Chrome)
             # if not has_version:
             #     lines.insert(has_version, '#version 100')
             out.append('\n'.join(lines))
@@ -627,6 +627,7 @@ class GlirProgram(GlirObject):
             if not status:
                 errors = gl.glGetShaderInfoLog(handle)
                 errormsg = self._get_error(code, errors, 4)
+                print('code is', code)
                 raise RuntimeError("Shader compilation error in %s:\n%s" % 
                                    (type_ + ' shader', errormsg))
         # Attach shaders
@@ -946,10 +947,10 @@ class GlirBuffer(GlirObject):
         self.activate()
         nbytes = data.nbytes
         
-        # Determine whether to check errors to try handling the ATI bug
-        check_ati_bug = ((not self._bufferSubDataOk) and
-                         (gl.current_backend is gl.gl2) and
-                         sys.platform.startswith('win'))
+        # # Determine whether to check errors to try handling the ATI bug
+        # check_ati_bug = ((not self._bufferSubDataOk) and
+        #                  (gl.current_backend is gl.gl2) and
+        #                  sys.platform.startswith('win'))
 
         # flush any pending errors
         if check_ati_bug:

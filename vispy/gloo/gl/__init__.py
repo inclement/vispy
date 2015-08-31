@@ -210,7 +210,7 @@ def check_error(when='periodic check'):
 
 
 # Load default gl backend
-from . import gl2 as default_backend  # noqa
+from . import es2 as default_backend  # noqa
 
 # Call use to start using our default backend
-use_gl()
+use_gl('es2')
