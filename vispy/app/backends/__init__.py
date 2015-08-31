@@ -13,6 +13,7 @@ imported. This stuff is mostly used in the Application.use method.
 # Define backends: name, vispy.app.backends.xxx module, native module name.
 # This is the order in which they are attempted to be imported.
 CORE_BACKENDS = [
+    ('Kivy', '_kivy', 'kivy'),
     ('PyQt4', '_pyqt4', 'PyQt4'),
     ('PyQt5', '_pyqt5', 'PyQt5'),
     ('PySide', '_pyside', 'PySide'),
