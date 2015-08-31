@@ -10,6 +10,9 @@ from ... import config
 
 class ApplicationBackend(BaseApplicationBackend):
 
+    def __init__(self):
+        BaseApplicationBackend.__init__(self)
+        self._timers = list()
 
     def initialise_kivy(self):
         from kivy.core.window import Window
@@ -33,7 +36,14 @@ class ApplicationBackend(BaseApplicationBackend):
 
     def _vispy_get_native_app(self):
         from kivy.app import App
-        return App.get_running_app()
+        running = App.get_running_app()
+        if not running:
+            running = App()
+        return running
+
+    def _add_timer(self, timer):
+        if timer not in self._timers:
+            self._timers.append(timer)
 
 from kivy.uix.widget import Widget
 class CanvasBackend(BaseCanvasBackend):
